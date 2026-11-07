@@ -1,0 +1,9 @@
+﻿CONTRATO DE PRESTACIÓN DE SERVICIOS
+
+PRIMERA. OBJETO. El presente contrato tiene por objeto la prestación de servicios de consultoría tecnológica.
+
+SEGUNDA. CLÁUSULA PENAL. En caso de incumplimiento por parte del CONTRATISTA, este deberá pagar una penalización equivalente al 30% del valor total del contrato.
+
+TERCERA. CONFIDENCIALIDAD. El CONTRATISTA se obliga a mantener absoluta reserva y no divulgar la información confidencial a la que tenga acceso.
+
+CUARTA. TERMINACIÓN. Cualquiera de las partes podrá dar por terminado el presente contrato mediante aviso escrito con 30 días de antelación.
