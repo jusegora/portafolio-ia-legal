@@ -9,11 +9,14 @@ Colección de sistemas de Inteligencia Artificial aplicados al sector legal.
 ## Proyecto 2: Analitica Predictiva Judicial (Machine Learning)
 *   **Ubicacion:** `ml_predictivo/`
 *   **Descripcion:** Modelo de Machine Learning (Random Forest) entrenado con 5,000 casos sinteticos. Predice la probabilidad de exito de una demanda.
-*   **Tecnologias:** Pandas, Scikit-Learn, Joblib.
 
 ## Proyecto 3: Agente Legal Autonomo (Agentic AI)
 *   **Ubicacion:** `agente_legal.py`
-*   **Descripcion:** Agente de IA con arquitectura de Function Calling. Decide de forma autonoma si debe usar la busqueda vectorial (RAG) o el modelo predictivo (ML) dependiendo de la pregunta del usuario.
+*   **Descripcion:** Agente de IA con arquitectura de Function Calling. Decide de forma autonoma si debe usar la busqueda vectorial (RAG) o el modelo predictivo (ML).
+
+## Proyecto 4: Sistema Seguro con Human-in-the-Loop (Gobernanza)
+*   **Ubicacion:** `agente_seguro.py`
+*   **Descripcion:** Implementacion de seguridad de nivel Enterprise (Modulo 16). El agente puede redactar demandas, pero el sistema se detiene y exige aprobacion humana explicita (SI/NO) antes de ejecutar acciones irreversibles. Incluye Guardrails a nivel de codigo Python.
 
 ---
 **Autor:** jusegora
