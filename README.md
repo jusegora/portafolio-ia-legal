@@ -1,22 +1,15 @@
-﻿# Motor RAG Legal (Inteligencia Artificial)
+﻿# Portafolio de IA y LegalTech
 
-Sistema de Búsqueda Semántica y Generación Aumentada por Recuperación (RAG) aplicado al sector legal.
+Colección de sistemas de Inteligencia Artificial aplicados al sector legal.
 
-## Descripcion
-Este proyecto implementa un pipeline de IA que lee contratos en texto plano, los convierte en vectores matematicos (Embeddings) usando modelos Open Source, los almacena en una base de datos vectorial (ChromaDB) y utiliza un Modelo de Lenguaje (LLM via Groq) para responder preguntas complejas basadas estrictamente en el contexto del contrato.
+## Proyecto 1: Motor RAG Legal (Búsqueda Semántica)
+*   **Ubicacion:** `src/`
+*   **Descripcion:** Pipeline RAG que convierte contratos en vectores, los almacena en ChromaDB y usa un LLM (Groq/Llama) para responder preguntas complejas basadas en el contexto.
 
-## Tecnologias
-*   **Python 3.11**
-*   **Sentence-Transformers** (Modelo `all-MiniLM-L6-v2` para Embeddings)
-*   **ChromaDB** (Base de datos vectorial)
-*   **Groq API** (Modelo `openai/gpt-oss-20b` para generacion de texto)
-*   **python-dotenv** (Gestion de credenciales)
-
-## Como ejecutar
-1. Clonar el repositorio.
-2. Crear un entorno virtual e instalar dependencias: `pip install -r requirements.txt`
-3. Crear un archivo `.env` con la clave `GROQ_API_KEY=tu_clave_aqui`.
-4. Ejecutar el motor: `python src/rag_engine.py`
+## Proyecto 2: Analitica Predictiva Judicial (Machine Learning)
+*   **Ubicacion:** `ml_predictivo/`
+*   **Descripcion:** Modelo de Machine Learning (Random Forest) entrenado con 5,000 casos sinteticos. Predice la probabilidad de exito de una demanda basandose en el tipo de caso, el juez y el monto reclamado.
+*   **Tecnologias:** Pandas, Scikit-Learn, Joblib.
 
 ---
 **Autor:** jusegora
