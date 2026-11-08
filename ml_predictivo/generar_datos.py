@@ -2,33 +2,31 @@
 import numpy as np
 import os
 
-def generar_dataset_sintetico(n_registros: int = 5000, ruta_salida: str = "ml_predictivo/casos_judiciales.csv"):
-    print(f"Generando {n_registros} casos judiciales sinteticos...")
+def crear_dataset(n=5000):
     np.random.seed(42)
     
-    tipos_caso = np.random.choice(['Laboral', 'Civil', 'Penal', 'Administrativo'], n_registros, p=[0.4, 0.3, 0.2, 0.1])
-    jueces = np.random.choice([f"JUEZ-{i:02d}" for i in range(1, 21)], n_registros)
-    montos = np.random.randint(1000, 50000, n_registros)
+    tipos = np.random.choice(['Laboral', 'Civil', 'Penal', 'Administrativo'], n, p=[0.4, 0.3, 0.2, 0.1])
+    jueces = np.random.choice([f"JUEZ-{i:02d}" for i in range(1, 21)], n)
+    montos = np.random.randint(1000, 50000, n)
     
-    probabilidad_base = np.where(tipos_caso == 'Laboral', 0.65, 0.45)
-    probabilidad_base = np.where((tipos_caso == 'Laboral') & (montos > 25000), 0.80, probabilidad_base)
-    probabilidad_base = np.where(tipos_caso == 'Penal', 0.30, probabilidad_base)
+    # Probabilidad base
+    prob = np.where(tipos == 'Laboral', 0.65, 0.45)
+    prob = np.where((tipos == 'Laboral') & (montos > 25000), 0.80, prob)
+    prob = np.where(tipos == 'Penal', 0.30, prob)
     
-    resultados = np.random.binomial(1, probabilidad_base)
+    resultados = np.random.binomial(1, prob)
     veredictos = np.where(resultados == 1, 'Favorable', 'Desfavorable')
     
     df = pd.DataFrame({
-        'tipo_caso': tipos_caso,
+        'tipo_caso': tipos,
         'juez_id': jueces,
         'monto_reclamado': montos,
         'veredicto': veredictos
     })
     
-    os.makedirs(os.path.dirname(ruta_salida), exist_ok=True)
-    df.to_csv(ruta_salida, index=False)
-    print(f"Dataset guardado exitosamente en: {ruta_salida}")
-    print("\nPrimeros 5 registros:")
-    print(df.head())
+    os.makedirs('ml_predictivo', exist_ok=True)
+    df.to_csv('ml_predictivo/casos_judiciales.csv', index=False)
+    print("Dataset creado.")
 
 if __name__ == "__main__":
-    generar_dataset_sintetico()
+    crear_dataset()

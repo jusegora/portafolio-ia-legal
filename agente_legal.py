@@ -10,49 +10,41 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-def consultar_contrato(pregunta: str) -> str:
+def buscar_contrato(pregunta):
     try:
-        modelo = SentenceTransformer('all-MiniLM-L6-v2')
-        # Silenciamos la telemetría de ChromaDB
-        cliente = chromadb.PersistentClient(path="data/chroma_db", settings=Settings(anonymized_telemetry=False))
-        coleccion = cliente.get_collection(name="contratos_legales")
-        
-        vector = modelo.encode([pregunta]).tolist()
-        resultados = coleccion.query(query_embeddings=vector, n_results=2)
-        return "\n".join(resultados['documents'][0])
+        emb = SentenceTransformer('all-MiniLM-L6-v2')
+        cli = chromadb.PersistentClient(path="data/chroma_db", settings=Settings(anonymized_telemetry=False))
+        col = cli.get_collection(name="contratos_legales")
+        res = col.query(query_embeddings=emb.encode([pregunta]).tolist(), n_results=2)
+        return "\n".join(res['documents'][0])
     except Exception as e:
-        return f"Error al consultar contratos: {e}"
+        return f"Error: {e}"
 
-def predecir_resultado(tipo_caso: str, juez_id: str, monto: int) -> str:
+def predecir_caso(tipo, juez, monto):
     try:
-        modelo = joblib.load('ml_predictivo/modelo_judicial.joblib')
-        le_tipo = joblib.load('ml_predictivo/encoder_tipo.joblib')
-        le_juez = joblib.load('ml_predictivo/encoder_juez.joblib')
-        le_veredicto = joblib.load('ml_predictivo/encoder_veredicto.joblib')
+        clf = joblib.load('ml_predictivo/modelo.joblib')
+        le_t = joblib.load('ml_predictivo/enc_tipo.joblib')
+        le_j = joblib.load('ml_predictivo/enc_juez.joblib')
+        le_v = joblib.load('ml_predictivo/enc_verd.joblib')
         
-        tipo_num = le_tipo.transform([tipo_caso])[0]
-        juez_num = le_juez.transform([juez_id])[0]
+        X = pd.DataFrame([[le_t.transform([tipo])[0], le_j.transform([juez])[0], monto]], 
+                         columns=['tipo_num', 'juez_num', 'monto_reclamado'])
         
-        X = pd.DataFrame([[tipo_num, juez_num, monto]], columns=['tipo_caso_num', 'juez_num', 'monto_reclamado'])
-        pred = modelo.predict(X)[0]
-        prob = modelo.predict_proba(X)[0][1] * 100
-        
-        veredicto = le_veredicto.inverse_transform([pred])[0]
-        return f"Veredicto pronosticado: {veredicto} con una probabilidad de exito del {prob:.2f}%."
+        pred = clf.predict(X)[0]
+        prob = clf.predict_proba(X)[0][1] * 100
+        return f"Veredicto: {le_v.inverse_transform([pred])[0]} ({prob:.2f}% exito)."
     except Exception as e:
-        return f"Error en el modelo predictivo: {e}"
+        return f"Error: {e}"
 
 herramientas = [
     {
         "type": "function",
         "function": {
-            "name": "consultar_contrato",
-            "description": "Usa esta herramienta cuando el usuario pregunte sobre clausulas, obligaciones, penalizaciones o terminos especificos de un contrato legal.",
+            "name": "buscar_contrato",
+            "description": "Busca informacion en contratos legales.",
             "parameters": {
                 "type": "object",
-                "properties": {
-                    "pregunta": {"type": "string", "description": "La pregunta legal del usuario sobre el contrato"}
-                },
+                "properties": {"pregunta": {"type": "string"}},
                 "required": ["pregunta"]
             }
         }
@@ -60,79 +52,53 @@ herramientas = [
     {
         "type": "function",
         "function": {
-            "name": "predecir_resultado",
-            "description": "Usa esta herramienta cuando el usuario pregunte sobre la probabilidad de ganar un juicio o el resultado esperado de un caso.",
+            "name": "predecir_caso",
+            "description": "Predice el resultado de un juicio.",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "tipo_caso": {"type": "string", "enum": ["Laboral", "Civil", "Penal", "Administrativo"], "description": "El tipo de caso legal"},
-                    "juez_id": {"type": "string", "description": "El ID del juez asignado (ej. JUEZ-05)"},
-                    "monto": {"type": "integer", "description": "El monto reclamado en dolares"}
+                    "tipo": {"type": "string"},
+                    "juez": {"type": "string"},
+                    "monto": {"type": "integer"}
                 },
-                "required": ["tipo_caso", "juez_id", "monto"]
+                "required": ["tipo", "juez", "monto"]
             }
         }
     }
 ]
 
-class AgenteLegal:
+class Agente:
     def __init__(self):
-        api_key = os.getenv("GROQ_API_KEY")
-        self.llm = Groq(api_key=api_key, timeout=15.0)
-        self.mensajes = [
-            {"role": "system", "content": "Eres un abogado experto y asistente virtual. Tienes acceso a herramientas para consultar contratos y predecir resultados judiciales. Usa la herramienta adecuada segun la pregunta del usuario. Si no sabes algo, di que no tienes informacion."}
-        ]
+        self.client = Groq(api_key=os.getenv("GROQ_API_KEY"), timeout=15.0)
+        self.msgs = [{"role": "system", "content": "Eres un abogado experto. Usa las herramientas si es necesario."}]
 
-    def preguntar(self, texto: str):
-        print(f"\nUsuario: {texto}")
-        self.mensajes.append({"role": "user", "content": texto})
+    def run(self, texto):
+        print(f"\nUser: {texto}")
+        self.msgs.append({"role": "user", "content": texto})
         
-        respuesta = self.llm.chat.completions.create(
-            messages=self.mensajes,
-            model="openai/gpt-oss-20b",
-            tools=herramientas,
-            tool_choice="auto"
+        res = self.client.chat.completions.create(
+            messages=self.msgs, model="openai/gpt-oss-20b", tools=herramientas, tool_choice="auto"
         )
         
-        mensaje_respuesta = respuesta.choices[0].message
-        self.mensajes.append(mensaje_respuesta)
+        msg = res.choices[0].message
+        self.msgs.append(msg)
         
-        if mensaje_respuesta.tool_calls:
-            for tool_call in mensaje_respuesta.tool_calls:
-                nombre_funcion = tool_call.function.name
-                argumentos = json.loads(tool_call.function.arguments)
-                
-                print(f"  [El Agente decidio usar la herramienta: {nombre_funcion}]")
-                
-                if nombre_funcion == "consultar_contrato":
-                    resultado_herramienta = consultar_contrato(argumentos.get("pregunta"))
-                elif nombre_funcion == "predecir_resultado":
-                    resultado_herramienta = predecir_resultado(
-                        argumentos.get("tipo_caso"), 
-                        argumentos.get("juez_id"), 
-                        argumentos.get("monto")
-                    )
+        if msg.tool_calls:
+            for tc in msg.tool_calls:
+                args = json.loads(tc.function.arguments)
+                if tc.function.name == "buscar_contrato":
+                    out = buscar_contrato(args.get("pregunta"))
                 else:
-                    resultado_herramienta = "Herramienta no reconocida."
+                    out = predecir_caso(args.get("tipo"), args.get("juez"), args.get("monto"))
                     
-                self.mensajes.append({
-                    "role": "tool",
-                    "tool_call_id": tool_call.id,
-                    "name": nombre_funcion,
-                    "content": str(resultado_herramienta)
-                })
+                self.msgs.append({"role": "tool", "tool_call_id": tc.id, "name": tc.function.name, "content": str(out)})
                 
-            respuesta_final = self.llm.chat.completions.create(
-                messages=self.mensajes,
-                model="openai/gpt-oss-20b"
-            )
-            print(f"\nAgente Legal: {respuesta_final.choices[0].message.content}")
-            self.mensajes.append(respuesta_final.choices[0].message)
-            
+            final_res = self.client.chat.completions.create(messages=self.msgs, model="openai/gpt-oss-20b")
+            print(f"Agente: {final_res.choices[0].message.content}")
         else:
-            print(f"\nAgente Legal: {mensaje_respuesta.content}")
+            print(f"Agente: {msg.content}")
 
 if __name__ == "__main__":
-    agente = AgenteLegal()
-    agente.preguntar("¿De cuanto es la penalizacion si el contratista incumple?")
-    agente.preguntar("Tengo un caso laboral con el JUEZ-05 por 30000 dolares. ¿Cual es mi probabilidad de ganar?")
+    a = Agente()
+    a.run("¿De cuanto es la penalizacion por incumplimiento?")
+    a.run("Probabilidad de ganar caso laboral con JUEZ-05 por 30000 dolares.")
