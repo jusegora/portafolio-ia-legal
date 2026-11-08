@@ -1,6 +1,6 @@
-﻿# Portafolio de IA y LegalTech
+﻿# Portafolio de IA, LegalTech y Legal Operations
 
-Colección de sistemas de Inteligencia Artificial aplicados al sector legal.
+Colección de sistemas de Inteligencia Artificial y Analítica Avanzada aplicados al sector legal.
 
 ## Proyecto 1: Motor RAG Legal (Búsqueda Semántica)
 *   **Ubicacion:** `src/`
@@ -16,7 +16,12 @@ Colección de sistemas de Inteligencia Artificial aplicados al sector legal.
 
 ## Proyecto 4: Sistema Seguro con Human-in-the-Loop (Gobernanza)
 *   **Ubicacion:** `agente_seguro.py`
-*   **Descripcion:** Implementacion de seguridad de nivel Enterprise (Modulo 16). El agente puede redactar demandas, pero el sistema se detiene y exige aprobacion humana explicita (SI/NO) antes de ejecutar acciones irreversibles. Incluye Guardrails a nivel de codigo Python.
+*   **Descripcion:** Implementacion de seguridad de nivel Enterprise. El agente puede redactar demandas, pero el sistema se detiene y exige aprobacion humana explicita antes de ejecutar acciones irreversibles.
+
+## Proyecto 5: Dashboard de Legal Operations (Power BI & DAX)
+*   **Ubicacion:** `LegalOps_Dashboard.pbix` y `LegalOps_Dashboard.pdf`
+*   **Descripcion:** Dashboard ejecutivo interactivo para la toma de decisiones legales. Incluye visualizaciones de veredictos, distribucion de casos y una metrica DAX personalizada para calcular el "Monto en Riesgo" economico.
 
 ---
 **Autor:** jusegora
+*Abogado | AI Solutions Architect | LegalTech & Data Science*
