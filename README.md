@@ -1,12 +1,14 @@
 ﻿# Proyectos de IA y LegalTech
 
-Repositorio con herramientas de procesamiento de lenguaje natural, machine learning y agentes autonomos.
+**Por:** jusegora | Abogado & AI Solutions Architect
+
+Repositorio con herramientas de procesamiento de lenguaje natural, machine learning y agentes autónomos aplicados al sector legal.
 
 ## Proyectos
-- **RAG Engine (`src/rag_engine.py`)**: Busqueda semantica en contratos usando ChromaDB y Groq.
+- **Motor RAG (`src/rag_engine.py`)**: Búsqueda semántica en contratos usando ChromaDB y Groq.
 - **ML Predictivo (`ml_predictivo/`)**: Modelo Random Forest para predecir resultados judiciales.
-- **Agente Autonomo (`agente_legal.py`)**: Agente que decide entre buscar en contratos o predecir juicios.
-- **Agente Seguro (`agente_seguro.py`)**: Agente con aprobacion humana (HITL) para generar demandas.
+- **Agente Autónomo (`agente_legal.py`)**: Agente que decide entre buscar en contratos o predecir juicios.
+- **Agente Seguro (`agente_seguro.py`)**: Agente con aprobación humana (HITL) para generar demandas.
 
 ## Setup
 1. Crear entorno con Python 3.11.
