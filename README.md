@@ -1,4 +1,4 @@
-﻿# Portafolio de IA, LegalTech y Legal Operations
+# Portafolio de IA, LegalTech y Legal Operations
 
 **Autor:** jusegora  
 *Abogado | AI Solutions Architect | LegalTech & Data Science*
