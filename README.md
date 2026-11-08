@@ -1,6 +1,6 @@
 ﻿# Proyectos de IA y LegalTech
 
-**Por:** jusegora | Abogado & AI Solutions Architect
+**Por:** jusegora | Abogado & AI Solutions Architect | LegalTech & Análisis Forense de Datos
 
 Repositorio con herramientas de procesamiento de lenguaje natural, machine learning y agentes autónomos aplicados al sector legal.
 
