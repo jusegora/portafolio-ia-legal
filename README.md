@@ -19,4 +19,4 @@ Este proyecto implementa un pipeline de IA que lee contratos en texto plano, los
 4. Ejecutar el motor: `python src/rag_engine.py`
 
 ---
-**Autor:** jusegora | Abogado & AI Solutions Architect | LegalTech & Análisis Forense de Datos
+**Autor:** jusegora | legal AI Engineer
